@@ -4,14 +4,14 @@
 #include "timer.h"
 #include <SFML/System/Clock.hpp>
 
-Timer::Timer(void) {
+Timer::Timer() {
     sf::Clock clock_;
     float duration_ = 0.0f;
     isRunning_ = false;
 }
 
 
-Timer::~Timer(void) {
+Timer::~Timer() {
 }
 
 

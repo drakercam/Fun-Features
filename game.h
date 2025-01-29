@@ -20,6 +20,8 @@ class Game {
         std::vector<EnemyGameObject*> enemies_;
         sf::Texture background_;
         sf::Sprite background_sprite_;
+        Timer* enemySpawnTimer_;
+
 
     public:
         Game();
@@ -32,6 +34,7 @@ class Game {
         void startGameClock();
         void setIsRunning(bool change);
         bool getIsRunning();
+        void toSpawnEnemy();
 
         void mainLoop();
         sf::Vector2u getScreenResolution();
