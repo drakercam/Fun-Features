@@ -104,6 +104,7 @@ void Game::mainLoop() {                // draw the game window and detect events
                     static_cast<float>(mousePosition.x), 
                     static_cast<float>(mousePosition.y)
                 );
+                window_.setMouseCursorVisible(false);
             }
         }
 
@@ -120,7 +121,7 @@ void Game::mainLoop() {                // draw the game window and detect events
         // enemies_[0]->draw(window_);
 
         for (int i = 0; i < enemies_.size(); ++i) {
-            enemies_[i]->draw(window_); 
+            enemies_[i]->draw(window_);
         }
 
         player->draw(window_);
@@ -147,7 +148,7 @@ void Game::update() {
 
         float distance = std::sqrt(difference.x * difference.x + difference.y * difference.y);
 
-        if (distance < 48.0f) {
+        if (distance < 94.0f) {
             std::cout << "Colliding with enemy object " << enemies_[i]->getName() << std::endl;
         }
     }

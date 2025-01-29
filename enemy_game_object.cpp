@@ -4,6 +4,7 @@
 #include<SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <random>
+#include <iostream>
 
 EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int i) {
     // Create a random device and seed the random number generator
@@ -34,7 +35,7 @@ EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int
         sf::Color::White     // White 
     };
     
-    circle_.setRadius(25.0f);
+    circle_.setRadius(72.0f);
     circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
     circle_.setFillColor(sf::Color::Blue);
 
@@ -43,6 +44,14 @@ EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int
 
     circle_.setFillColor(colors[color_pos_]);
 
+    if (!enemy_texture_.loadFromFile("textures/mineral_monster.png")) {
+        std::cerr << "Failed to load background image!" << std::endl;
+    }
+
+    enemy_texture_.setSmooth(false);
+    enemy_sprite_.setTexture(enemy_texture_);
+    enemy_sprite_.setOrigin(circle_.getRadius(), circle_.getRadius());
+    enemy_sprite_.setPosition(position_.x, position_.y);
 } // use the game_object constructor
 
 EnemyGameObject::EnemyGameObject() {
@@ -83,8 +92,11 @@ void EnemyGameObject::draw(sf::RenderTarget &target) {
 
     circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
     circle_.setPosition(position_.x, position_.y);
+    enemy_sprite_.setOrigin(circle_.getRadius(), circle_.getRadius());
+    enemy_sprite_.setPosition(position_.x, position_.y);
 
-    target.draw(circle_);
+    // target.draw(circle_);
+    target.draw(enemy_sprite_);
 }
 
 // PlayerGameObject inherits from GameObject, however the update function will be overridden to change specifics
