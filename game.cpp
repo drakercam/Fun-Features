@@ -147,7 +147,7 @@ void Game::update() {
 
         float distance = std::sqrt(difference.x * difference.x + difference.y * difference.y);
 
-        if (distance < 20.0f) {
+        if (distance < 48.0f) {
             std::cout << "Colliding with enemy object " << enemies_[i]->getName() << std::endl;
         }
     }
