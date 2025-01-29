@@ -23,3 +23,6 @@ I hope you enjoy the project, it is rather simple at the momemt but I plan to ex
 6. Implement powerups of some sort based on the collectibles
 7. Create a UI showcasing collected items, health, upgradables.
 8. Implement a pause menu with an options menu to change audio settings.
+
+# Credits for Textures:
+1. Background Texture By Me.

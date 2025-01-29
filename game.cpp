@@ -133,7 +133,7 @@ void Game::SetupGameWorld(void) {
         }
     };
 
-    if (!background_.loadFromFile("textures/space.png")) {
+    if (!background_.loadFromFile("textures/new_background.png")) {
         std::cerr << "Failed to load background image!" << std::endl;
     }
 
@@ -141,7 +141,7 @@ void Game::SetupGameWorld(void) {
 
     player = new PlayerGameObject(100.0, 200.0, 0.0, 100.0);
 
-    std::vector<std::string> enemyNames = {"Cam", "Jenna", "Jared", "Taden", "Tommy", "Minna", "Tom", "Abbi", "Sam", "Hana"};
+    std::vector<std::string> enemyNames = {"Anakin", "Obi-Wan", "Yoda", "Mace", "Yaddle", "Rex", "Ezra", "Maul", "Vader", "Starkiller"};
 
     // create as many enemies as needed
     for (int i = 0; i < 10; ++i) {
