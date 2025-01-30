@@ -26,3 +26,5 @@ I hope you enjoy the project, it is rather simple at the momemt but I plan to ex
 
 # Credits for Textures:
 1. Background Texture By Me.
+2. All player and enemy sprites created by me.
+3. Game font acquired from https://www.dafont.com/arcade-classic-2.font, License: Free to Use
