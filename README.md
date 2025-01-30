@@ -27,5 +27,6 @@ I hope you enjoy the project, it is rather simple at the momemt but I plan to ex
 
 # Credits for Textures:
 1. Background Textures: https://ansimuz.itch.io/space-background, CC-O Free to Use
-3. Music: https://gooseninja.itch.io/space-music-pack, CC-O Free to Use
-4. Sprites: https://ansimuz.itch.io/gothicvania-patreon-collection, CC-O Free to Use
+2. Music: https://gooseninja.itch.io/space-music-pack, CC-O Free to Use
+3. Sprites: https://ansimuz.itch.io/gothicvania-patreon-collection, CC-O Free to Use
+4. Game font: https://www.dafont.com/arcade-classic-2.font, CC-O Free to Use
