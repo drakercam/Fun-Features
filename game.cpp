@@ -88,9 +88,11 @@ void Game::toSpawnEnemy() {
 }
 
 void Game::mainLoop() {                // draw the game window and detect events
+    setIsGameStart(true);
+    
     while (window_.isOpen()) {
         startGameClock();
-
+ 
         sf::Event event;
         while (window_.pollEvent(event)) {
             if (event.type == sf::Event::Closed) { window_.close(); }
@@ -107,7 +109,11 @@ void Game::mainLoop() {                // draw the game window and detect events
                 window_.setMouseCursorVisible(false);
             }
 
-            handleMenuInput(event); // moved into a helper function for better code readabilty
+            if (getIsGameStart()) {
+                startMenu_->handleMenuInput(event, window_);
+            } else {
+                pauseMenu_->handleMenuInput(event, window_);
+            }
         }
 
         update();
@@ -116,19 +122,32 @@ void Game::mainLoop() {                // draw the game window and detect events
 
         window_.draw(background_sprite_);
 
-        if (getIsPaused()) {
-            if (pauseMenu_) {
-                pauseMenu_->update();
-                pauseMenu_->draw(window_);
-            }
-        }
+        if (startMenu_->getState()) {
 
-        else {
-            for (int i = 0; i < enemies_.size(); ++i) {
-                enemies_[i]->draw(window_);
+            if (startMenu_ && startMenu_->getActive()) {
+                startMenu_->update();
+                startMenu_->draw(window_);
             }
 
-            player->draw(window_);
+        }  else {
+
+            setIsGameStart(false);
+            startMenu_->setActive(false); // should prevent the startMenu from being opened after game starts
+
+            if (pauseMenu_->getState()) {
+                if (pauseMenu_) {
+                    pauseMenu_->update();
+                    pauseMenu_->draw(window_);
+                }
+            }
+
+            else {
+                for (int i = 0; i < enemies_.size(); ++i) {
+                    enemies_[i]->draw(window_);
+                }
+
+                player->draw(window_);
+            }
         }
 
         window_.display();
@@ -159,45 +178,20 @@ void Game::update() {
     }
 }
 
+void Game::setIsGameStart(bool isStart) {
+    isStart_ = isStart;
+}
+
+bool Game::getIsGameStart() {
+    return isStart_;
+}
+
 void Game::setIsRunning(bool change) {
     isRunning_ = change;
 }
 
 bool Game::getIsRunning() {
     return isRunning_;
-}
-
-void Game::handleMenuInput(sf::Event &event) {
-    if (event.type == sf::Event::KeyPressed) {
-        if (getIsPaused()) {
-            if (event.key.code == sf::Keyboard::Up) {
-                pauseMenu_->moveUpSelection();
-            }
-
-            if (event.key.code == sf::Keyboard::Down) {
-                pauseMenu_->moveDownSelection();
-            }
-
-            if (event.key.code == sf::Keyboard::Enter) {
-                switch (pauseMenu_->getPressedMenuItem()) {
-                    case 0: // Resume
-                        setIsPaused(false);
-                        break;
-                    case 1:
-                        // to add a new separate menu for settings later on
-                        break;
-                    
-                    case 2: // Quit
-                        window_.close();
-                        break;
-                }
-            }
-        }
-
-        if (event.key.code == sf::Keyboard::Escape) {
-            setIsPaused(!getIsPaused());
-        }
-    }
 }
 
 // Set up the game world (scene, game objects, etc.)
@@ -214,9 +208,24 @@ void Game::SetupGameWorld(void) {
 
     enemySpawnTimer_->Start(8.0f);
 
+    sf::Text quitButton;
+    sf::Text startButton;
+    std::vector<sf::Text> startMenuButtons = {startButton, quitButton};
+    std::vector<std::string> startMenuNames = {"Start", "Quit"};
+
+    startMenu_ = new Menu(window_.getSize().x, window_.getSize().y, 30, 60, startMenuButtons, startMenuNames);
+    startMenu_->setState(true);
+    
+    sf::Text quitButton2;
+    sf::Text pauseButton;
+    sf::Text settingsButton;
+
+    std::vector<sf::Text> pauseMenuButtons = {pauseButton, settingsButton, quitButton2};
+    std::vector<std::string> pauseMenuNames = {"Resume", "Settings", "Quit"};
+
     // set up the pause menu
-    pauseMenu_ = new Menu(window_.getSize().x, window_.getSize().y);
-    setIsPaused(false);
+    pauseMenu_ = new Menu(window_.getSize().x, window_.getSize().y, 30, 60, pauseMenuButtons, pauseMenuNames);
+    pauseMenu_->setState(false);
 }
 
 // Destroy the game world
@@ -227,5 +236,6 @@ void Game::DestroyGameWorld(void) {
 
     delete player;
     delete enemySpawnTimer_;
+    delete startMenu_;
     delete pauseMenu_;
 }

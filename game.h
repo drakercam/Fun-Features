@@ -23,7 +23,9 @@ class Game {
         sf::Sprite background_sprite_;
         Timer* enemySpawnTimer_;
         Menu* pauseMenu_;
+        Menu* startMenu_;
         bool isPaused_;
+        bool isStart_;
 
 
     public:
@@ -41,6 +43,8 @@ class Game {
         void setIsPaused(bool pause) { isPaused_ = pause; }
         bool getIsPaused() { return isPaused_; }
         void handleMenuInput(sf::Event &event);
+        void setIsGameStart(bool isStart);
+        bool getIsGameStart();
 
         void mainLoop();
         sf::Vector2u getScreenResolution();

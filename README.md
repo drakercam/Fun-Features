@@ -13,6 +13,7 @@ I hope you enjoy the project, it is rather simple at the momemt but I plan to ex
 - Player game object that moves according to the mouse
 - Enemy game object's that spawn at random points throughout the screen with an attempt to eliminate any spawning overlap.
 - Collision detection between Player and Enemy Objects
+- Pause menu to resume or quit (settings to be added in near future)
 
 # Planned Features:
 1. Implement Enemy wandering mechanics to follow towards player if within a given distance
@@ -25,4 +26,6 @@ I hope you enjoy the project, it is rather simple at the momemt but I plan to ex
 8. Implement a pause menu with an options menu to change audio settings.
 
 # Credits for Textures:
-1. Background Texture By Me.
+1. Background Textures: https://ansimuz.itch.io/space-background, CC-O Free to Use
+3. Music: https://gooseninja.itch.io/space-music-pack, CC-O Free to Use
+4. Sprites: https://ansimuz.itch.io/gothicvania-patreon-collection, CC-O Free to Use
