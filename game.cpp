@@ -106,10 +106,8 @@ void Game::mainLoop() {                // draw the game window and detect events
                 );
                 window_.setMouseCursorVisible(false);
             }
-        }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-            window_.close();
+            handleMenuInput(event); // moved into a helper function for better code readabilty
         }
 
         update();
@@ -117,14 +115,21 @@ void Game::mainLoop() {                // draw the game window and detect events
         window_.clear();
 
         window_.draw(background_sprite_);
-        
-        // enemies_[0]->draw(window_);
 
-        for (int i = 0; i < enemies_.size(); ++i) {
-            enemies_[i]->draw(window_);
+        if (getIsPaused()) {
+            if (pauseMenu_) {
+                pauseMenu_->update();
+                pauseMenu_->draw(window_);
+            }
         }
 
-        player->draw(window_);
+        else {
+            for (int i = 0; i < enemies_.size(); ++i) {
+                enemies_[i]->draw(window_);
+            }
+
+            player->draw(window_);
+        }
 
         window_.display();
     }
@@ -162,6 +167,39 @@ bool Game::getIsRunning() {
     return isRunning_;
 }
 
+void Game::handleMenuInput(sf::Event &event) {
+    if (event.type == sf::Event::KeyPressed) {
+        if (getIsPaused()) {
+            if (event.key.code == sf::Keyboard::Up) {
+                pauseMenu_->moveUpSelection();
+            }
+
+            if (event.key.code == sf::Keyboard::Down) {
+                pauseMenu_->moveDownSelection();
+            }
+
+            if (event.key.code == sf::Keyboard::Enter) {
+                switch (pauseMenu_->getPressedMenuItem()) {
+                    case 0: // Resume
+                        setIsPaused(false);
+                        break;
+                    case 1:
+                        // to add a new separate menu for settings later on
+                        break;
+                    
+                    case 2: // Quit
+                        window_.close();
+                        break;
+                }
+            }
+        }
+
+        if (event.key.code == sf::Keyboard::Escape) {
+            setIsPaused(!getIsPaused());
+        }
+    }
+}
+
 // Set up the game world (scene, game objects, etc.)
 void Game::SetupGameWorld(void) {
     if (!background_.loadFromFile("textures/new_background.png")) {
@@ -175,6 +213,10 @@ void Game::SetupGameWorld(void) {
     enemySpawnTimer_ = new Timer();
 
     enemySpawnTimer_->Start(8.0f);
+
+    // set up the pause menu
+    pauseMenu_ = new Menu(window_.getSize().x, window_.getSize().y);
+    setIsPaused(false);
 }
 
 // Destroy the game world
@@ -185,4 +227,5 @@ void Game::DestroyGameWorld(void) {
 
     delete player;
     delete enemySpawnTimer_;
+    delete pauseMenu_;
 }

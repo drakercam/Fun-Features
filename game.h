@@ -5,6 +5,7 @@
 #include "enemy_game_object.h"
 #include "game_object.h"
 #include "timer.h"
+#include "menu.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -21,6 +22,8 @@ class Game {
         sf::Texture background_;
         sf::Sprite background_sprite_;
         Timer* enemySpawnTimer_;
+        Menu* pauseMenu_;
+        bool isPaused_;
 
 
     public:
@@ -35,6 +38,9 @@ class Game {
         void setIsRunning(bool change);
         bool getIsRunning();
         void toSpawnEnemy();
+        void setIsPaused(bool pause) { isPaused_ = pause; }
+        bool getIsPaused() { return isPaused_; }
+        void handleMenuInput(sf::Event &event);
 
         void mainLoop();
         sf::Vector2u getScreenResolution();
