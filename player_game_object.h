@@ -9,11 +9,11 @@
 
 class PlayerGameObject : public GameObject {
     private:
-        sf::Vector2i position_;
+        sf::Vector2f position_;
         float angle_ ;
         float speed_ ;
         sf::CircleShape circle_;
-        sf::Vector2i circlePosition_;
+        sf::Vector2f circlePosition_;
         sf::Texture player_texture_;
         sf::Sprite player_sprite_;
         sf::Clock animationClock_;
@@ -29,7 +29,7 @@ class PlayerGameObject : public GameObject {
         PlayerGameObject(float x, float y, float angle, float speed);
         void update(float deltaTime);
         void setPlayerPosition(float x, float y);
-        sf::Vector2i getPosition();
+        sf::Vector2f getPosition();
         sf::CircleShape getCirclePosition() { return circle_; }
         sf::Texture getTexture() { return player_texture_; }
         sf::Sprite getSprite() { return player_sprite_; }

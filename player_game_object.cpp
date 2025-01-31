@@ -8,7 +8,7 @@
 PlayerGameObject::PlayerGameObject(float x, float y, float angle, float speed) 
     : GameObject(x, y, angle, speed),
       frameRect_(0, 0, 106, 77) {
-        circle_.setRadius(36.0f);
+        circle_.setRadius(30.0f);
         circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
         circle_.setPosition(position_.x, position_.y);
         circle_.setFillColor(sf::Color::Magenta);
@@ -39,7 +39,7 @@ void PlayerGameObject::setPlayerPosition(float x, float y) {
     circle_.setPosition(position_.x, position_.y);
 }
 
-sf::Vector2i PlayerGameObject::getPosition() {
+sf::Vector2f PlayerGameObject::getPosition() {
     return position_;
 }
 
@@ -48,9 +48,9 @@ void PlayerGameObject::draw(sf::RenderTarget &target) {
     circle_.setPosition(position_.x, position_.y);
     circle_.setFillColor(sf::Color::Magenta);
     player_sprite_.setOrigin(circle_.getRadius(), circle_.getRadius());
-    player_sprite_.setPosition(position_.x, position_.y);
+    player_sprite_.setPosition(position_.x - 24.0f, position_.y - 10.0f);
 
-    // target.draw(circle_);
+    // target.draw(circle_);    // for debug purposes
     target.draw(player_sprite_);
 }
 

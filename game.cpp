@@ -50,15 +50,15 @@ void Game::startGameClock() {
 void Game::toSpawnEnemy() {
     static int i = 0;
     // Custom hash function for sf::Vector2i
-    struct Vector2iHash {
-        std::size_t operator()(const sf::Vector2i& v) const {
+    struct Vector2fHash {
+        std::size_t operator()(const sf::Vector2f& v) const {
             return std::hash<int>()(v.x) ^ (std::hash<int>()(v.y) << 1);
         }
     };
 
     // Custom equality operator for sf::Vector2i
-    struct Vector2iEqual {
-        bool operator()(const sf::Vector2i& lhs, const sf::Vector2i& rhs) const {
+    struct Vector2fEqual {
+        bool operator()(const sf::Vector2f& lhs, const sf::Vector2f& rhs) const {
             return lhs.x == rhs.x && lhs.y == rhs.y;
         }
     };
@@ -72,9 +72,9 @@ void Game::toSpawnEnemy() {
         enemies_.push_back(new EnemyGameObject(0.0, 100.0, enemyNames[i], i));
 
         // O(n) Time complexity solition to recalculate different enemy positions
-        std::unordered_map<sf::Vector2i, int, Vector2iHash, Vector2iEqual> positionMap;
+        std::unordered_map<sf::Vector2f, int, Vector2fHash, Vector2fEqual> positionMap;
         for (int i = 0; i < enemies_.size(); ++i) {
-            sf::Vector2i pos = enemies_[i]->getPosition();
+            sf::Vector2f pos = enemies_[i]->getPosition();
             if (positionMap.find(pos) != positionMap.end()) {
                 // position already exists, calc new position
                 enemies_[i]->createNewRandomPosition();
@@ -165,9 +165,8 @@ void Game::update() {
     player->update(deltaTime_);
 
     for (int i = 0; i < enemies_.size(); ++i) {
-        enemies_[i]->update(deltaTime_);
+        enemies_[i]->update(deltaTime_, *player);
     }
-
 
     if (!(enemies_.size() >= 10)) { // only allow 10 enemies for now
         toSpawnEnemy();
@@ -175,11 +174,11 @@ void Game::update() {
 
     for (int i = 0; i < enemies_.size(); ++i) {
         EnemyGameObject* current_enemy = enemies_[i];
-        sf::Vector2i difference = current_enemy->getPosition() - player->getPosition();
+        sf::Vector2f difference = current_enemy->getPosition() - player->getPosition();
 
         float distance = std::sqrt(difference.x * difference.x + difference.y * difference.y);
 
-        if (distance < 94.0f) {
+        if (distance < 52.0f) {
             std::cout << "Colliding with enemy object " << enemies_[i]->getName() << std::endl;
         }
     }

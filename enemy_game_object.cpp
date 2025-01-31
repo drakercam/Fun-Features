@@ -7,7 +7,8 @@
 #include <iostream>
 
 EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int i)
-    : frameRect_(0, 0, 48, 48) {
+    : frameRect_(0, 0, 48, 48),
+      velocity_(0.0f, 0.0f) {
     // Create a random device and seed the random number generator
     std::random_device randomDevice;
     std::mt19937 gen(randomDevice());
@@ -36,7 +37,7 @@ EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int
         sf::Color::White     // White 
     };
     
-    circle_.setRadius(36.0f);
+    circle_.setRadius(23.0f);
     circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
     circle_.setFillColor(sf::Color::Blue);
 
@@ -54,6 +55,7 @@ EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int
     enemy_sprite_.setTextureRect(frameRect_);
     enemy_sprite_.setOrigin(circle_.getRadius(), circle_.getRadius());
     enemy_sprite_.setPosition(position_.x, position_.y);
+
 } // use the game_object constructor
 
 EnemyGameObject::EnemyGameObject() {
@@ -70,7 +72,7 @@ void EnemyGameObject::setEnemyPosition(float new_x, float new_y) {
     circle_.setPosition(position_.x, position_.y);
 }
 
-sf::Vector2i EnemyGameObject::getPosition() {
+sf::Vector2f EnemyGameObject::getPosition() {
     return position_;
 }
 
@@ -98,14 +100,16 @@ void EnemyGameObject::draw(sf::RenderTarget &target) {
     enemy_sprite_.setPosition(position_.x, position_.y);
     enemy_sprite_.setScale(1.604f, 1.604f);
 
-    // target.draw(circle_);
+    // target.draw(circle_);   // for debug purposes
     target.draw(enemy_sprite_);
 }
 
 // PlayerGameObject inherits from GameObject, however the update function will be overridden to change specifics
 // about the player
 
-void EnemyGameObject::update(float deltaTime) {
+void EnemyGameObject::update(float deltaTime, PlayerGameObject &player) {
+    position_ += velocity_ * deltaTime;
+
     // new functionality to be added here
     if (animationClock_.getElapsedTime().asSeconds() >= frameDuration_) {
         curFrame = (curFrame + 1) % totFrames;
@@ -114,6 +118,36 @@ void EnemyGameObject::update(float deltaTime) {
         enemy_sprite_.setTextureRect(frameRect_);
         animationClock_.restart();
     }
+
+    // wandering towards player functionality
+    sf::Vector2f playerPos = player.getPosition();
+
+    sf::Vector2f desired = playerPos - getPosition();
+    sf::Vector2f steering = desired - getVelocity();
+
+    float length = std::sqrt(steering.x * steering.x + steering.y * steering.y);
+    if (length != 0) {
+        steering /= length; // normalize
+    }
+
+    steering *= 0.1f;
+    velocity_ += steering;
+
+    // const float maxSpeed = 150.0f;  // Limit max speed
+    // if (std::sqrt(velocity_.x * velocity_.x + velocity_.y * velocity_.y) > maxSpeed) {
+    //     velocity_ = velocity_ / std::sqrt(velocity_.x * velocity_.x + velocity_.y * velocity_.y) * maxSpeed;
+    // }
+
+    // // Add randomness to wandering
+    // float randNum = ((float)rand()) / ((float)RAND_MAX);
+    // float randAngle = randNum * 2.0f * 3.14159265f;  // Random angle for wandering
+    // float radius = 100.0f;  // Adjust the wandering radius
+
+    // // Add random offset to the desired direction (towards the player)
+    // sf::Vector2f randomWanderingOffset(radius * cos(randAngle), radius * sin(randAngle));
+    // desired += randomWanderingOffset;  // Add the wandering offset to the direction
+
+    // timer_.Reset();
 
     // for now simply call the parent update function
     GameObject::update(deltaTime);
