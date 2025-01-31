@@ -5,6 +5,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Clock.hpp>
 
 class PlayerGameObject : public GameObject {
     private:
@@ -15,13 +16,18 @@ class PlayerGameObject : public GameObject {
         sf::Vector2i circlePosition_;
         sf::Texture player_texture_;
         sf::Sprite player_sprite_;
+        sf::Clock animationClock_;
+        sf::IntRect frameRect_;
+        float frameDuration_ = 0.15f;
+        int curFrame = 0;
+        int totFrames = 4;
 
     public:
         void draw(sf::RenderTarget &target);
         PlayerGameObject();
         ~PlayerGameObject();
         PlayerGameObject(float x, float y, float angle, float speed);
-        void update(float deltaTime, sf::RenderTarget &target);
+        void update(float deltaTime);
         void setPlayerPosition(float x, float y);
         sf::Vector2i getPosition();
         sf::CircleShape getCirclePosition() { return circle_; }

@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 
 class Game {   
     private:
@@ -21,6 +22,7 @@ class Game {
         std::vector<EnemyGameObject*> enemies_;
         sf::Texture background_;
         sf::Sprite background_sprite_;
+        sf::Music gameMusic_;
         Timer* enemySpawnTimer_;
         Menu* pauseMenu_;
         Menu* startMenu_;

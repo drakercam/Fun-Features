@@ -91,7 +91,9 @@ void Menu::handleMenuInput(sf::Event &event, sf::RenderWindow &window) {
             if (event.key.code == sf::Keyboard::Down) {
                 moveDownSelection();
             }
-
+            
+            // for now this works, but will need to be altered once I want to add settings menu
+            // ** THERES A BUG WITH THE START MENU, QUIT DOESN"T WORK BECAUSE IT READS CASE 1 FOR IT ** DEFINITELY FIX
             if (event.key.code == sf::Keyboard::Enter) {
                 switch (getPressedMenuItem()) {
                     case 0: // Resume
@@ -110,7 +112,6 @@ void Menu::handleMenuInput(sf::Event &event, sf::RenderWindow &window) {
 
         if (event.key.code == sf::Keyboard::Escape) {
             setState(!getState());
-            std::cout << "Pause menu toggled. New state: " << getState() << std::endl;
         }
     }
 }

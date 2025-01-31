@@ -6,17 +6,20 @@
 #include <iostream>
 
 PlayerGameObject::PlayerGameObject(float x, float y, float angle, float speed) 
-    : GameObject(x, y, angle, speed) {
+    : GameObject(x, y, angle, speed),
+      frameRect_(0, 0, 106, 77) {
         circle_.setRadius(36.0f);
         circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
         circle_.setPosition(position_.x, position_.y);
         circle_.setFillColor(sf::Color::Magenta);
 
-        if (!player_texture_.loadFromFile("textures/mineral_monster_slayer.png")) {
+        if (!player_texture_.loadFromFile("textures/spaceship-unit.png")) {
             std::cerr << "Failed to load background image!" << std::endl;
         }
         player_texture_.setSmooth(false);
         player_sprite_.setTexture(player_texture_);
+        player_sprite_.setTextureRect(frameRect_);
+
         player_sprite_.setOrigin(circle_.getRadius(), circle_.getRadius());
         player_sprite_.setPosition(position_.x, position_.y);
 
@@ -55,8 +58,15 @@ void PlayerGameObject::draw(sf::RenderTarget &target) {
 // PlayerGameObject inherits from GameObject, however the update function will be overridden to change specifics
 // about the player
 
-void PlayerGameObject::update(float deltaTime,  sf::RenderTarget &target) {
+void PlayerGameObject::update(float deltaTime) {
     // new functionality to be added here
+    if (animationClock_.getElapsedTime().asSeconds() >= frameDuration_) {
+        curFrame = (curFrame + 1) % totFrames;
+
+        frameRect_.left = curFrame * 106;
+        player_sprite_.setTextureRect(frameRect_);
+        animationClock_.restart();
+    }
 
     // for now simply call the parent update function
     GameObject::update(deltaTime);

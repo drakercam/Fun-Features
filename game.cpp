@@ -162,6 +162,13 @@ sf::Vector2u Game::getScreenResolution() {
 }
 
 void Game::update() {
+    player->update(deltaTime_);
+
+    for (int i = 0; i < enemies_.size(); ++i) {
+        enemies_[i]->update(deltaTime_);
+    }
+
+
     if (!(enemies_.size() >= 10)) { // only allow 10 enemies for now
         toSpawnEnemy();
     }
@@ -196,11 +203,27 @@ bool Game::getIsRunning() {
 
 // Set up the game world (scene, game objects, etc.)
 void Game::SetupGameWorld(void) {
-    if (!background_.loadFromFile("textures/new_background.png")) {
+    if (!background_.loadFromFile("textures/space_background.png")) {
         std::cerr << "Failed to load background image!" << std::endl;
     }
 
     background_sprite_.setTexture(background_);
+
+    // scale the background to the window size
+    sf::Vector2u textureSize = background_.getSize();
+    sf::Vector2u windowSize = window_.getSize();
+    float scaleX = windowSize.x / textureSize.x;
+    float scaleY = windowSize.y / textureSize.y;
+
+    background_sprite_.setScale(scaleX, scaleY);
+
+    if (!gameMusic_.openFromFile("textures/meet-the-princess.wav")) {
+        std::cerr << "Error loading game music file!" << std::endl;
+    }
+    else {
+        gameMusic_.setLoop(true);
+        gameMusic_.play();
+    }
 
     player = new PlayerGameObject(100.0, 200.0, 0.0, 100.0);
 

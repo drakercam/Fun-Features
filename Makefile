@@ -1,4 +1,4 @@
-opts = -lsfml-graphics -lsfml-window -lsfml-system
+opts = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 dependencies = main.o game.o game_object.o player_game_object.o enemy_game_object.o  timer.o menu.o
 
 game: ${dependencies}
