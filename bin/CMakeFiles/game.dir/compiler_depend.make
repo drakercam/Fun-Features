@@ -1455,6 +1455,13 @@ CMakeFiles/game.dir/menu.cpp.o: ../menu.cpp \
   /usr/include/SFML/Window/WindowStyle.hpp \
   /usr/include/SFML/System/Clock.hpp \
   /usr/include/SFML/System/Time.hpp \
+  /usr/include/SFML/Window/Event.hpp \
+  /usr/include/SFML/Window/Joystick.hpp \
+  /usr/include/SFML/Window/Keyboard.hpp \
+  /usr/include/SFML/Window/Mouse.hpp \
+  /usr/include/SFML/Window/Sensor.hpp \
+  /usr/include/SFML/System/Vector3.hpp \
+  /usr/include/SFML/System/Vector3.inl \
   /usr/include/c++/11/iostream \
   /usr/include/c++/11/ostream \
   /usr/include/c++/11/ios \
@@ -1462,14 +1469,7 @@ CMakeFiles/game.dir/menu.cpp.o: ../menu.cpp \
   /usr/include/c++/11/bits/basic_ios.tcc \
   /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/istream \
-  /usr/include/c++/11/bits/istream.tcc \
-  /usr/include/SFML/Window/Event.hpp \
-  /usr/include/SFML/Window/Joystick.hpp \
-  /usr/include/SFML/Window/Keyboard.hpp \
-  /usr/include/SFML/Window/Mouse.hpp \
-  /usr/include/SFML/Window/Sensor.hpp \
-  /usr/include/SFML/System/Vector3.hpp \
-  /usr/include/SFML/System/Vector3.inl
+  /usr/include/c++/11/bits/istream.tcc
 
 CMakeFiles/game.dir/player_game_object.cpp.o: ../player_game_object.cpp \
   /usr/include/stdc-predef.h \

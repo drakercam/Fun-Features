@@ -8,41 +8,59 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Clock.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <vector>
+#include <string>
 
 class PlayerGameObject : public GameObject {
-    private:
-        sf::Vector2f position_;
-        float angle_;
-        float speed_;
-        Timer shootingTimer;
-        std::string direction_;
-        sf::CircleShape circle_;
-        sf::Vector2f circlePosition_;
-        sf::Texture player_texture_;
-        sf::Sprite player_sprite_;
-        sf::Clock animationClock_;
-        sf::IntRect frameRect_;
-        std::vector<Bullet*> bullets_;
-        float frameDuration_ = 0.15f;
-        int curFrame = 0;
-        int totFrames = 4;
+private:
+    sf::Vector2f position_;
+    float angle_;
+    float speed_;
+    Timer shootingTimer;
+    std::string direction_;
+    sf::CircleShape circle_;
+    sf::Vector2f circlePosition_;
+    sf::Texture player_texture_;
+    sf::Sprite player_sprite_;
+    sf::Clock animationClock_;
+    sf::IntRect frameRect_;
+    std::vector<Bullet*> bullets_;
+    
+    // Animation frame control
+    float frameDuration_ = 0.15f;
+    int curFrame = 0;
+    int totFrames = 4;
 
-    public:
-        void draw(sf::RenderTarget &target);
-        PlayerGameObject();
-        ~PlayerGameObject();
-        PlayerGameObject(float x, float y, float angle, float speed);
-        void update(sf::RenderTarget &target, float deltaTime);
-        void setPlayerPosition(float x, float y);
-        void keyboardInput(float deltaTime);
-        void shoot();
-        void removeBullets(float deltaTime, sf::RenderTarget &target);
-        sf::Vector2f getPosition();
-        sf::CircleShape getCirclePosition() { return circle_; }
-        sf::Texture getTexture() { return player_texture_; }
-        sf::Sprite getSprite() { return player_sprite_; }
-        std::vector<Bullet*> getBullets() { return bullets_; }
+public:
+    // Constructors and Destructor
+    PlayerGameObject();
+    PlayerGameObject(float x, float y, float angle, float speed);
+    ~PlayerGameObject();
 
+    // Update functions
+    void updateAnimation();
+    void update(sf::RenderTarget &target, float deltaTime);
+    
+    // Player setup and input
+    void setupPlayer();
+    void keyboardInput(float deltaTime);
+    void rotatePlayer();
+
+    // Bullet management
+    void shoot();
+    void removeBullets(float deltaTime, sf::RenderTarget &target);
+    
+    // Position and accessor methods
+    void setPlayerPosition(float x, float y);
+    sf::Vector2f getPosition() const;
+    const sf::CircleShape& getCirclePosition() const { return circle_; }
+    const sf::Texture& getTexture() const { return player_texture_; }
+    const sf::Sprite& getSprite() const { return player_sprite_; }
+    const std::vector<Bullet*>& getBullets() const { return bullets_; }
+
+    // Drawing method
+    void draw(sf::RenderTarget &target);
 };
 
 #endif

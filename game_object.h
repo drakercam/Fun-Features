@@ -13,10 +13,12 @@ class GameObject {
         GameObject();
         GameObject(float x, float y, float angle, float speed);
         ~GameObject();
-        void update(float deltaTime);
-        void draw(sf::RenderTarget &target);
+        virtual void update(float deltaTime);
+        virtual void draw(sf::RenderTarget &target);
         void setSpeed(float newSpeed);
         float getSpeed() { return speed_; }
+        const sf::Vector2f& getPosition() const { return position_; }
+        void setPosition(const sf::Vector2f& pos) { position_ = pos; }
 };
 
 #endif

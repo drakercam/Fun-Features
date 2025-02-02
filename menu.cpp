@@ -1,60 +1,54 @@
 #include "menu.h"
 
-Menu::Menu(float width, float height, int charSize, int offset, std::vector<sf::Text> &buttons, std::vector<std::string> &names) {
+Menu::Menu(float width, float height, int charSize, int offset, std::vector<sf::Text>& buttons, std::vector<std::string>& names)
+    : width_(width), height_(height), characterSize_(charSize), buttons_(buttons), names_(names),
+      buttonHeightOffset_(offset), selectedItemIndex_(0), state_(false), active_(true) {
+
     if (!font_.loadFromFile("textures/ARCADECLASSIC.TTF")) {
         std::cerr << "Unable to load font for menu" << std::endl;
     }
 
-    width_ = width;
-    height_ = height;
-    characterSize_ = charSize;
-    buttons_ = buttons;
-    names_ = names;
-    buttonHeightOffset_ = offset;
-    active_ = true;
-    state_ = false;
-
+    // Create the background shape
     background_.setSize(sf::Vector2f(width_, height_));
     background_.setFillColor(sf::Color(0, 0, 0, 150)); // semi-transparent menu
 
+    // Create buttons
     createButtons(buttonHeightOffset_);
-
-    selectedItemIndex_ = 0;
 }
 
-Menu::Menu() {
-    // default constructor
+Menu::Menu() 
+    : width_(0), height_(0), characterSize_(0), buttonHeightOffset_(0), selectedItemIndex_(0), state_(false), active_(false) {
+    // Default constructor can initialize with default values if necessary
 }
 
-void Menu::draw(sf::RenderTarget &target) {
+void Menu::draw(sf::RenderTarget& target) {
     target.draw(background_);
-    for (int i = 0; i < buttons_.size(); ++i) {
-        target.draw(buttons_[i]);
+    for (const auto& button : buttons_) {
+        target.draw(button);
     }
 }
 
 void Menu::moveUpSelection() {
     if (selectedItemIndex_ > 0) {
-        selectedItemIndex_--;
+        --selectedItemIndex_;
     }
 }
 
 void Menu::moveDownSelection() {
-    if (selectedItemIndex_ <  buttons_.size() - 1) {
-        selectedItemIndex_++;
+    if (selectedItemIndex_ < buttons_.size() - 1) {
+        ++selectedItemIndex_;
     }
 }
 
-int Menu::getPressedMenuItem() {
+int Menu::getPressedMenuItem() const {
     return selectedItemIndex_;
 }
 
 void Menu::update() {
-    for (int i = 0; i < buttons_.size(); ++i) {
+    for (size_t i = 0; i < buttons_.size(); ++i) {
         if (i == selectedItemIndex_) {
             buttons_[i].setFillColor(sf::Color::Red);
-        }
-        else {
+        } else {
             buttons_[i].setFillColor(sf::Color::White);
         }
     }
@@ -63,7 +57,7 @@ void Menu::update() {
 void Menu::createButtons(int heightOffset) {
     int initHeightOffset = heightOffset;
 
-    for (int i = 0; i < buttons_.size(); ++i) {
+    for (size_t i = 0; i < buttons_.size(); ++i) {
         buttons_[i].setFont(font_);
         buttons_[i].setString(names_[i]);
         buttons_[i].setCharacterSize(characterSize_);
@@ -73,40 +67,31 @@ void Menu::createButtons(int heightOffset) {
     }
 }
 
-void Menu::setActive(bool active) {
-    active_ = active;
-}
-
-bool Menu::getActive() {
-    return active_;
-}
-
-void Menu::handleMenuInput(sf::Event &event, sf::RenderWindow &window) {
+void Menu::handleMenuInput(sf::Event& event, sf::RenderWindow& window) {
     if (event.type == sf::Event::KeyPressed) {
         if (getState()) {
-            if (event.key.code == sf::Keyboard::Up) {
-                moveUpSelection();
-            }
-
-            if (event.key.code == sf::Keyboard::Down) {
-                moveDownSelection();
-            }
-            
-            // for now this works, but will need to be altered once I want to add settings menu
-            // ** THERES A BUG WITH THE START MENU, QUIT DOESN"T WORK BECAUSE IT READS CASE 1 FOR IT ** DEFINITELY FIX
-            if (event.key.code == sf::Keyboard::Enter) {
-                switch (getPressedMenuItem()) {
-                    case 0: // Resume
-                        setState(false);
-                        break;
-                    case 1:
-                        // to add a new separate menu for settings later on
-                        break;
-                    
-                    case 2: // Quit
-                        window.close();
-                        break;
-                }
+            switch (event.key.code) {
+                case sf::Keyboard::Up:
+                    moveUpSelection();
+                    break;
+                case sf::Keyboard::Down:
+                    moveDownSelection();
+                    break;
+                case sf::Keyboard::Enter:
+                    switch (getPressedMenuItem()) {
+                        case 0: // Resume
+                            setState(false);
+                            break;
+                        case 1:
+                            // Placeholder for settings menu logic in future
+                            break;
+                        case 2: // Quit
+                            window.close();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
             }
         }
 
