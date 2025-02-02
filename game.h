@@ -77,8 +77,8 @@ public:
     // UI elements
     void updateUI();
     void drawUI(sf::RenderWindow& window);
-    void updateScore(int amount);
-    void updatePlayerHealth(int amount);
+    void updateScore();
+    void updatePlayerHealth();
     void updateEnemyHealth(int enemyIndex, int amount);
     void setupUI();
 

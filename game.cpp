@@ -150,6 +150,9 @@ void Game::mainLoop() {
             startMenu_->update();
             startMenu_->draw(window_);
         } else {
+
+            drawUI(window_);
+
             setIsGameStart(false);
             startMenu_->setActive(false);
 
@@ -164,8 +167,6 @@ void Game::mainLoop() {
                 player->draw(window_);
                 // debugDrawBounds(window_);  // Debugging collision bounds
             }
-            drawUI(window_);
-
         }
         
         window_.display();
@@ -190,7 +191,7 @@ void Game::debugDrawBounds(sf::RenderTarget& target) {
         sf::FloatRect enemyBounds = enemy->getSprite().getGlobalBounds();
 
         // Shrink the bounding box by a certain factor (e.g., 20% smaller)
-        float shrinkFactor = 0.8f;  // Shrink to 80% of the original size
+        float shrinkFactor = 0.4f;  // Shrink to 80% of the original size
         float newWidth = enemyBounds.width * shrinkFactor;
         float newHeight = enemyBounds.height * shrinkFactor;
 
@@ -227,19 +228,21 @@ void Game::setupUI() {
     healthText_.setCharacterSize(24);  // Font size
     healthText_.setFillColor(sf::Color::Red);  // Font color
     healthText_.setPosition(10.0f, 40.0f);  // Position of the health text
+
+    updateScore();
+    updatePlayerHealth();
 }
 
-void Game::updateScore(int amount) {
-    score_ += amount;
-    scoreText_.setString("Score " + std::to_string(score_));
+void Game::updateScore() {
+    scoreText_.setString("Score      " + std::to_string(score_));
 }
 
-void Game::updatePlayerHealth(int amount) {
-    playerHealth_ += amount;
-    healthText_.setString("Health " + std::to_string(playerHealth_));
+void Game::updatePlayerHealth() {
+    healthText_.setString("Health    " + std::to_string(playerHealth_));
 }
 
 void Game::drawUI(sf::RenderWindow& window) {
+
     window.draw(scoreText_);
     window.draw(healthText_);
 }
@@ -268,7 +271,8 @@ void Game::collisionHandling() {
             if (bulletBounds.intersects(enemyBounds)) {
                 // If the enemy is dead, increase score
                 enemies_.erase(enemies_.begin() + i);
-                updateScore(100);  // Increase score by 100
+                score_ += 100;
+                updateScore();  // Increase score by 100
                 break;  // Exit the loop to avoid invalidating the iterator
             }
 
@@ -276,7 +280,9 @@ void Game::collisionHandling() {
             sf::FloatRect playerBounds = player->getSprite().getGlobalBounds();
             if (playerBounds.intersects(current_enemy->getSprite().getGlobalBounds())) {
                 // Handle player health decrease due to collision with enemy
-                updatePlayerHealth(-10);  // Update the health UI (adjust according to your health system)                
+                playerHealth_ -= 10;
+                updatePlayerHealth();  // Update the health UI (adjust according to your health system)
+                break;                
                 // You can add additional logic for when the player collides with an enemy.
             }
         }
