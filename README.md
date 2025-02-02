@@ -7,7 +7,7 @@ In this C++ project using the SFML graphics library, I am creating an applicatio
 To build the application, go to directory containing the projects source code. Run make in the terminal, you should see a bunch of object files being created and linked into an executable called 'game'. To run, simply type ./game.
 
 # Extra Information:
-I hope you enjoy the project, it is rather simple at the momemt but I plan to expand it over time as it goes on. And who knows, as times goes on it may become a full fledged game some day. I also plan to switch to Cmake sometime in the near future as my build tool but for now the makefile works.
+I hope you enjoy the project, it is rather simple at the momemt but I plan to expand it over time as it goes on. And who knows, as times goes on it may become a full fledged game some day. The build tool is now Cmake, so thats good.
 
 # Current Features:
 - Player game object that moves according to the mouse
