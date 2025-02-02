@@ -30,3 +30,4 @@ I hope you enjoy the project, it is rather simple at the momemt but I plan to ex
 2. Music: https://gooseninja.itch.io/space-music-pack, CC-O Free to Use
 3. Sprites: https://ansimuz.itch.io/gothicvania-patreon-collection, CC-O Free to Use
 4. Game font: https://www.dafont.com/arcade-classic-2.font, CC-O Free to Use
+5. Laser sfx: https://mixkit.co/free-sound-effects/laser/, CC-O Free to Use

@@ -22,13 +22,16 @@ class Game {
         std::vector<EnemyGameObject*> enemies_;
         sf::Texture background_;
         sf::Sprite background_sprite_;
-        sf::Music gameMusic_;
+        // sf::Music gameMusic_;
+        // sf::Music levelStart_;
+        // sf::Music laserSound_;
         Timer* enemySpawnTimer_;
         Menu* pauseMenu_;
         Menu* startMenu_;
         bool isPaused_;
         bool isStart_;
-
+        sf::FloatRect bulletBounds;
+        sf::FloatRect enemyBounds;
 
     public:
         Game();
@@ -47,6 +50,8 @@ class Game {
         void handleMenuInput(sf::Event &event);
         void setIsGameStart(bool isStart);
         bool getIsGameStart();
+        void collisionHandling();
+        void debugDrawBounds(sf::RenderTarget& target);
 
         void mainLoop();
         sf::Vector2u getScreenResolution();

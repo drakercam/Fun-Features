@@ -1,4 +1,5 @@
 #include "enemy_game_object.h"
+#include "player_game_object.h"
 #include "game.h"
 #include<SFML/Graphics.hpp>
 #include<SFML/Graphics/RenderTarget.hpp>
@@ -6,7 +7,7 @@
 #include <random>
 #include <iostream>
 
-EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int i)
+EnemyGameObject::EnemyGameObject(float angle, float speed, int i)
     : frameRect_(0, 0, 48, 48),
       velocity_(0.0f, 0.0f) {
     // Create a random device and seed the random number generator
@@ -41,7 +42,6 @@ EnemyGameObject::EnemyGameObject(float angle, float speed, std::string name, int
     circle_.setOrigin(circle_.getRadius(), circle_.getRadius());
     circle_.setFillColor(sf::Color::Blue);
 
-    name_ = name;
     color_pos_ = i;
 
     circle_.setFillColor(colors[color_pos_]);
@@ -100,8 +100,8 @@ void EnemyGameObject::draw(sf::RenderTarget &target) {
     enemy_sprite_.setPosition(position_.x, position_.y);
     enemy_sprite_.setScale(1.604f, 1.604f);
 
-    // target.draw(circle_);   // for debug purposes
     target.draw(enemy_sprite_);
+    // target.draw(circle_);   // for debug purposes
 }
 
 // PlayerGameObject inherits from GameObject, however the update function will be overridden to change specifics
@@ -130,7 +130,7 @@ void EnemyGameObject::update(float deltaTime, PlayerGameObject &player) {
         steering /= length; // normalize
     }
 
-    steering *= 0.1f;
+    steering *= 1.0f;
     velocity_ += steering;
 
     // const float maxSpeed = 150.0f;  // Limit max speed

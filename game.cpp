@@ -66,10 +66,9 @@ void Game::toSpawnEnemy() {
     bool toSpawn = enemySpawnTimer_->Finished();
 
     if (toSpawn) {
-        std::vector<std::string> enemyNames = {"Anakin", "Obi-Wan", "Yoda", "Mace", "Yaddle", "Rex", "Ezra", "Maul", "Vader", "Starkiller"};
 
         // create as many enemies as needed
-        enemies_.push_back(new EnemyGameObject(0.0, 100.0, enemyNames[i], i));
+        enemies_.push_back(new EnemyGameObject(0.0, 100.0, i));
 
         // O(n) Time complexity solition to recalculate different enemy positions
         std::unordered_map<sf::Vector2f, int, Vector2fHash, Vector2fEqual> positionMap;
@@ -78,11 +77,14 @@ void Game::toSpawnEnemy() {
             if (positionMap.find(pos) != positionMap.end()) {
                 // position already exists, calc new position
                 enemies_[i]->createNewRandomPosition();
+                pos = enemies_[i]->getPosition();
             }
+
+            positionMap[pos] = i;
         }
 
         enemySpawnTimer_->Reset();
-        enemySpawnTimer_->Start(8.0f); // spawn a new enemy every 8 seconds
+        enemySpawnTimer_->Start(2.0f); // spawn a new enemy every 8 seconds
         ++i;
     }
 }
@@ -96,18 +98,6 @@ void Game::mainLoop() {                // draw the game window and detect events
         sf::Event event;
         while (window_.pollEvent(event)) {
             if (event.type == sf::Event::Closed) { window_.close(); }
-
-            if (event.type == sf::Event::MouseMoved) {
-                // Get the mouse position relative to the window
-                sf::Vector2i mousePosition = sf::Mouse::getPosition(window_);
-
-                // Set the position of the circle shape
-                player->setPlayerPosition(
-                    static_cast<float>(mousePosition.x), 
-                    static_cast<float>(mousePosition.y)
-                );
-                window_.setMouseCursorVisible(false);
-            }
 
             if (getIsGameStart()) {
                 startMenu_->handleMenuInput(event, window_);
@@ -147,6 +137,7 @@ void Game::mainLoop() {                // draw the game window and detect events
                 }
 
                 player->draw(window_);
+                debugDrawBounds(window_); // show collision bounds for debugging purposes
             }
         }
 
@@ -161,27 +152,43 @@ sf::Vector2u Game::getScreenResolution() {
     return sf::Vector2u(desktop.width, desktop.height);
 }
 
+void Game::debugDrawBounds(sf::RenderTarget& target) {
+    // Draw bounding boxes for bullets
+    for (Bullet* bullet : player->getBullets()) {
+        sf::FloatRect bulletBounds = bullet->getBulletSprite().getGlobalBounds();
+        sf::RectangleShape bulletBox(sf::Vector2f(bulletBounds.width, bulletBounds.height));
+        bulletBox.setPosition(bulletBounds.left, bulletBounds.top);
+        bulletBox.setFillColor(sf::Color::Transparent);
+        bulletBox.setOutlineColor(sf::Color::Red);  // Red for bullets
+        bulletBox.setOutlineThickness(1.5f);
+        target.draw(bulletBox);
+    }
+
+    // Draw bounding boxes for enemies
+    for (EnemyGameObject* enemy : enemies_) {
+        sf::FloatRect enemyBounds;
+        enemyBounds.width = enemy->getSprite().getGlobalBounds().width - 36.0f;
+        enemyBounds.height = enemy->getSprite().getGlobalBounds().height - 36.0f;
+        sf::RectangleShape enemyBox(sf::Vector2f(enemyBounds.width, enemyBounds.height));
+        enemyBox.setPosition(enemy->getPosition().x, enemy->getPosition().y);
+        enemyBox.setOrigin(enemy->getCircle().getRadius(), enemy->getCircle().getRadius());
+        enemyBox.setFillColor(sf::Color::Transparent);
+        enemyBox.setOutlineColor(sf::Color::Green);  // Green for enemies
+        enemyBox.setOutlineThickness(2.0f);
+        target.draw(enemyBox);
+    }
+}
+
 void Game::update() {
-    player->update(deltaTime_);
+    player->update(window_, deltaTime_);
 
     for (int i = 0; i < enemies_.size(); ++i) {
         enemies_[i]->update(deltaTime_, *player);
     }
 
-    if (!(enemies_.size() >= 10)) { // only allow 10 enemies for now
-        toSpawnEnemy();
-    }
+    toSpawnEnemy();
 
-    for (int i = 0; i < enemies_.size(); ++i) {
-        EnemyGameObject* current_enemy = enemies_[i];
-        sf::Vector2f difference = current_enemy->getPosition() - player->getPosition();
-
-        float distance = std::sqrt(difference.x * difference.x + difference.y * difference.y);
-
-        if (distance < 52.0f) {
-            std::cout << "Colliding with enemy object " << enemies_[i]->getName() << std::endl;
-        }
-    }
+    collisionHandling();
 }
 
 void Game::setIsGameStart(bool isStart) {
@@ -200,11 +207,51 @@ bool Game::getIsRunning() {
     return isRunning_;
 }
 
+void Game::collisionHandling() {
+    for (int i = 0; i < enemies_.size(); ++i) {
+        EnemyGameObject* current_enemy = enemies_[i];
+        sf::Vector2f differencePE = current_enemy->getPosition() - player->getPosition();
+
+        float distancePE = std::sqrt(differencePE.x * differencePE.x + differencePE.y * differencePE.y);
+
+        if (distancePE < 52.0f) {
+            std::cout << "Colliding with enemy object " << i << std::endl;
+        }
+
+        for (int j = 0; j < player->getBullets().size(); ++j) {
+
+            Bullet* bullet = player->getBullets()[j];
+
+            bulletBounds = bullet->getBulletSprite().getGlobalBounds();
+            enemyBounds = current_enemy->getSprite().getGlobalBounds();
+            // Set enemyBounds to match enemyBox exactly
+            enemyBounds.left = current_enemy->getPosition().x;
+            enemyBounds.top = current_enemy->getPosition().y;
+            enemyBounds.width -= 36.0f;
+            enemyBounds.height -= 36.0f;
+
+            // // some sort of memory bug here
+            if (bulletBounds.intersects(enemyBounds)) {
+                std::cout << "Bullet " << j << " hit enemy " << j << std::endl;
+
+                std::cout << "Deleted bullet " << j << ". Will free bullets_ vector later" << std::endl;
+
+                enemies_.erase(enemies_.begin() + i);
+                delete current_enemy;
+            }
+        }
+    }
+}
+
 // Set up the game world (scene, game objects, etc.)
 void Game::SetupGameWorld(void) {
     if (!background_.loadFromFile("textures/space_background.png")) {
         std::cerr << "Failed to load background image!" << std::endl;
     }
+
+    // if (!laserSound_.openFromFile("textures/mixkit-laser-cannon-shot-1678.wav")) {
+    //     std::cerr << "Unable to load laser shot sounds" << std::endl;
+    // }
 
     background_sprite_.setTexture(background_);
 
@@ -216,19 +263,19 @@ void Game::SetupGameWorld(void) {
 
     background_sprite_.setScale(scaleX, scaleY);
 
-    if (!gameMusic_.openFromFile("textures/meet-the-princess.wav")) {
-        std::cerr << "Error loading game music file!" << std::endl;
-    }
-    else {
-        gameMusic_.setLoop(true);
-        gameMusic_.play();
-    }
+    // if (!gameMusic_.openFromFile("textures/meet-the-princess.wav")) {
+    //     std::cerr << "Error loading game music file!" << std::endl;
+    // }
 
-    player = new PlayerGameObject(100.0, 200.0, 0.0, 100.0);
+    // if (!levelStart_.openFromFile("textures/start-level.wav")) {
+    //     std::cerr << "Error loading level start sound" << std::endl;
+    // }
+
+    player = new PlayerGameObject(500.0f, 0.0f, 0.0, 500.0);
 
     enemySpawnTimer_ = new Timer();
 
-    enemySpawnTimer_->Start(8.0f);
+    enemySpawnTimer_->Start(2.0f);
 
     sf::Text quitButton;
     sf::Text startButton;
@@ -248,14 +295,14 @@ void Game::SetupGameWorld(void) {
     // set up the pause menu
     pauseMenu_ = new Menu(window_.getSize().x, window_.getSize().y, 30, 60, pauseMenuButtons, pauseMenuNames);
     pauseMenu_->setState(false);
+
+    // gameMusic_.setLoop(true);
+    // gameMusic_.setVolume(10.0f);
+    // gameMusic_.play();
 }
 
 // Destroy the game world
 void Game::DestroyGameWorld(void) {
-    for (int i = 0; i < enemies_.size(); ++i) {
-        delete enemies_[i];
-    }
-
     delete player;
     delete enemySpawnTimer_;
     delete startMenu_;

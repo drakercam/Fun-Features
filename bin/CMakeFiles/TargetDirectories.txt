@@ -1,0 +1,3 @@
+/home/draker/personal_projects/game_dev_project/bin/CMakeFiles/game.dir
+/home/draker/personal_projects/game_dev_project/bin/CMakeFiles/edit_cache.dir
+/home/draker/personal_projects/game_dev_project/bin/CMakeFiles/rebuild_cache.dir
